@@ -1,0 +1,94 @@
+{% extends 'base.html' %} 
+{% load static %}
+
+{% block content %}
+
+    
+
+
+
+{% if properties %}
+
+<!-- {% if is_search %} 
+
+Search
+{{Title}}
+{% else %} 
+
+{{Title}}
+
+{% endif %} -->
+<div class="featured-property p-5 text-xl font-bold">
+    <h2 class="text-center text-3xl font-bold font-mono underline">{{Title}}</h2>
+    {% if is_search %} 
+
+    <form action="">
+        <input type="hidden" name="type" value="{{property_type}}">
+        <label for="district">District</label>
+        <select name="district" id="">
+            <option {% if 'Dehradun' == district %} selected {% endif %} value="Dehradun">Dehradun</option>
+            <option {% if 'Haridwar' == district %} selected {% endif %} value="Haridwar">Haridwar</option>
+            <option {% if 'Chamoli' == district %} selected {% endif %} value="Chamoli">Chamoli</option>
+            <option {% if 'Rudraprayag' == district %} selected {% endif %} value="Rudraprayag">Rudraprayag</option>
+            <option {% if 'Tehri' == district %} selected {% endif %} value="Tehri">Tehri</option>
+            <option {% if 'Uttarkashi' == district %} selected {% endif %} value="Uttarkashi">Uttarkashi</option>
+            <option {% if 'Pauri' == district %} selected {% endif %} value="Pauri">Pauri</option>
+            <option {% if 'Almora' == district %} selected {% endif %} value="Almora">Almora</option>
+            <option {% if 'Nanital' == district %} selected {% endif %} value="Nanital">Nanital</option>
+            <option {% if 'Pithoragarh' == district %} selected {% endif %} value="Pithoragarh">Pithoragarh</option>
+            <option {% if 'usnagar' == district %} selected {% endif %} value="usnagar">Udham Singh Nagar</option>
+            <option {% if 'Bageshwar' == district %} selected {% endif %} value="Bageshwar">Bageshwar</option>
+            <option {% if 'Champawat' == district %} selected {% endif %} value="Champawat">Champawat</option>
+        </select>
+        <button type="submit">Search</button>
+    </form>
+
+    {% endif %}
+
+    
+
+    <div class="property-cards flex flex-wrap justify-evenly">
+        {% for i in properties %} 
+        <a href="/property?id={{i.id}}" class="property-card w-[300px] mt-5 bg-purple-200 p-3 hover:bg-purple-500 p-4 rounded-md space-y-2">
+            <img src="{{i.poster.url}}" alt="" class="rounded-sm">
+            <div class="flex space-x-1 justify-center"><img src="{% static 'assets/locatioin.10aa369c.svg' %}" class="w-7" alt=""><span>{{i.name}}</span> </div>
+        </a>
+        {% endfor %}        
+    </div>
+</div>
+<!-- {% for i in properties %} 
+
+<img src="{{i.poster.url}}" alt="">
+
+{% endfor %} -->
+
+{% else %}
+
+{% if properties.count == 0 %}
+    
+    no properties found
+
+    {% else %}
+
+<div class="properties-category m-5 text-xl w-1/2 lg:w-full mx-auto">
+    <h3 class="text-5xl underline text-center my-5">Properties</h3>
+    <div class="properties-cata flex flex-col lg:flex-row justify-evenly items-center">
+        <a href="/properties?type=our_projects" class="bg-purple-200 p-3 hover:bg-purple-500 m-5 cursor-pointer rounded-md text-center font-serif font-bold">
+            <img src="{% static 'images/demo-house.webp' %}" alt="" class="">
+            <span>Our Projects</span>
+        </a>
+        <a href="/properties?type=residential" class="bg-purple-200 p-3 hover:bg-purple-500 m-5 cursor-pointer rounded-md text-center font-sarif font-bold"><img src="{% static 'images/demo-house.webp' %}" alt="" class=""><span>Residential</span></a>
+        <a href="/properties?type=commercial" class="bg-purple-200 p-3 hover:bg-purple-500 m-5 cursor-pointer rounded-md text-center font-sarif font-bold"><img src="{% static 'images/demo-house.webp' %}" alt="" class=""><span>Commercial</span></a>
+    </div>
+</div>
+
+
+{% endif %}
+
+
+
+{% endif %}
+{{properties.count}}
+
+{% endblock %}
+

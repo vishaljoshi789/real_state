@@ -1,0 +1,20 @@
+{% extends 'base.html' %} 
+
+{% block content %}
+
+{% for i in properties_images %} 
+
+<img src="{{i.image.url}}" alt="">
+
+
+
+
+{% endfor %}
+
+<form method="post">
+    {% csrf_token %}
+    {{user_form}}
+    <button type="submit" >submit</button>
+</form>
+
+{% endblock %}

@@ -1,0 +1,46 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'css/index.css' %}">
+    <title>{{title}}</title>
+</head>
+<body>
+    <nav>
+        <div class="upper flex justify-between flex-col md:flex-row my-2">
+            <div class="md:mx-10 flex items-center">
+                <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAABmJLR0QA/wD/AP+gvaeTAAABKUlEQVRIie3VMS8DUQDA8R8NEjUYaunXEFaDhE9hYDB2ZCZh8QWkVptZJKwkCJPEIpgYCBGJwdDUcHdJ095V2+sTQ//JWy6X97u83HuPQYM6r4x1XOAdnzjBYihwApv4Qj1jbPcbncVjG7BxrPQLreC7Q7SO+7xgAXtdgMm4zIOO4aBLsBZ/6FSvaBHHKRO/4CoDPcN0ryCM4ihl4lOU4nfmcBM/f8YqhvOgBenLux9/UGMjoj99PA+YVE1BdzDUj8mzqqSguyFBmNG6Tw9FSx+sIh6a0FdMhkRhQ+sSX4dGy7IP/PmQ8FoGWsetaMsE6bwNXBft0yC9tUGfRD9ekD7awEuhUNIvguTAD3paLaSgNTlvmU7baoKrf4EmLeNOdNeWfnl30P/tB9mOqI/OW56UAAAAAElFTkSuQmCC" alt="">
+                <span class="font-bold">8077670311</span>
+            </div>
+            <div class="flex space-x-10 mx-10 justify-end">
+                <a href="" class="facebook"><img src="{% static 'assets/fb.svg' %}" alt=""></a>
+                <a href="" class="twitter"><img src="{% static 'assets/twitter.svg' %}" alt=""></a>
+                <a href="" class="youtube"><img src="{% static 'assets/youtube.svg' %}" alt=""></a>
+                <a href="" class="linkedin"><img src="{% static 'assets/linkedin.svg' %}" alt=""></a>
+                <a href="" class="instagram"><img src="{% static 'assets/instagram.svg' %}" alt=""></a>
+                <a href="" class="whatsapp flex items-center justify-between flex-col md:flex-row"><div></div><img src="{% static 'assets/whatsapp.svg' %}" alt="">
+                    <span class="text-[10px] md:text-base font-bold hidden md:font-normal text-center">Click to Chat</span> </a>
+            </div>
+        </div>
+        <hr>
+        <div class="lower flex justify-evenly md:justify-end md:px-10 my-2 md:space-x-10 space-x-1 text-sm md:text-lg">
+            <a href="{% url 'index' %}" class="nav_buttons bg-blue-500 text-white p-1 md:p-2 rounded-lg hover:bg-blue-700">HOME</a>
+            <a href="{% url 'properties' %}" class="nav_buttons bg-blue-500 text-white p-1 md:p-2 rounded-lg hover:bg-blue-700">PROPERTIES</a>
+            <a href="" class="nav_buttons bg-blue-500 text-white p-1 md:p-2 rounded-lg hover:bg-blue-700">WISHLIST</a>
+            <a href="" class="nav_buttons bg-blue-500 text-white p-1 md:p-2 rounded-lg hover:bg-blue-700">ABOUT</a>
+            <a href="" class="nav_buttons bg-blue-500 text-white p-1 md:p-2 rounded-lg hover:bg-blue-700">CONTACT US</a>
+        </div>
+    </nav>
+    <hr>
+    <div class="content">
+        {% block content %}
+
+        {% endblock %}
+    </div>
+
+    
+</body>
+</html>
