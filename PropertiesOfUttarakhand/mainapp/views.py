@@ -87,7 +87,7 @@ def property(request):
             user = user_form.save(commit=False)
             user.pd = properties
             user.save()
-            return redirect('index')
+            # return redirect('')
             
     context["user_form"] = user_form
     context["title"] = properties.area

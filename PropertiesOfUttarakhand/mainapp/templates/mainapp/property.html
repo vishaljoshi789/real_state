@@ -6,10 +6,13 @@
 
 <img src="{{i.image.url}}" alt="">
 
-
-
-
 {% endfor %}
+
+{{properties_detail.name}} <br>
+{{properties_detail.description}}<br>
+{{properties_detail.district}}<br>
+{{properties_detail.pin_code}}<br>
+{{properties_detail.price}}
 
 <form method="post">
     {% csrf_token %}
