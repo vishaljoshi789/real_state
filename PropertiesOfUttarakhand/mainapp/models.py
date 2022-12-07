@@ -1,5 +1,6 @@
 from random import choices
 from django.db import models
+from django.contrib.auth.models import User
 
 # Create your models here.
 
@@ -9,7 +10,7 @@ residential_property_type_choices = (("stdio", "Studio"), ("1bhk", "1 BHK"), ("2
 
 commercial_property_type_choices = (("officespace", "Office Space"), ("foodcourt", "Food Court"), ("shoppingcomplex", "Shopping Complex"), ("retailshops", "Retail Shops"), ("plots", "Plots"), ("hotel", "Hotel"))
 
-district_choices = (("dehradun", "Dehradun"), ("haridwar", "Haridwar"), ("chamoli", "Chamoli"), ("rudraprayag", "Rudraprayag"), ("tehri", "Tehri"), ("uttarkashi", "Uttarkashi"), ("pauri", "Pauri"), ("almora", "Almora"), ("nanital", "Nanital"), ("pithoragarh", "Pithoragarh"), ("usnagar", "Udham Singh Nagar"), ("bageshwar", "Bageshwar"), ("champawat", "Champawat"))
+district_choices = (("Dehradun", "Dehradun"), ("Haridwar", "Haridwar"), ("Chamoli", "Chamoli"), ("Rudraprayag", "Rudraprayag"), ("Tehri", "Tehri"), ("Uttarkashi", "Uttarkashi"), ("Pauri", "Pauri"), ("Almora", "Almora"), ("Nanital", "Nanital"), ("Pithoragarh", "Pithoragarh"), ("Udham Singh Nagar", "Udham Singh Nagar"), ("Bageshwar", "Bageshwar"), ("Champawat", "Champawat"))
 
 def property_images_path(instance, filename):
 
@@ -25,18 +26,23 @@ class properties_detail(models.Model):
     description = models.TextField(null=True)
     poster = models.ImageField(upload_to=property_poster_path, null=True)
     area = models.CharField(max_length=255, blank=True)
-    resdential_property_type = models.CharField(max_length=255,choices=residential_property_type_choices, blank=True)
-    commercial_property_type = models.CharField(max_length=255,choices=commercial_property_type_choices, blank=True)
     status = models.CharField(max_length=255,choices=status_choices, blank=True, default="rm")
     price = models.IntegerField(null=True)
     locality = models.CharField(max_length=255, blank=True)
     district = models.CharField(max_length=255,choices=district_choices, blank=True) 
     pin_code = models.CharField(max_length=255, blank=True)
-    other_amenities = models.CharField(max_length=255, blank=True)
+    other_amenities = models.TextField(blank=True, null=True)
 
     residential_property = models.BooleanField(default=False)
+    resdential_property_type = models.CharField(max_length=255,choices=residential_property_type_choices, blank=True)
     commercial_property = models.BooleanField(default=False)
-    our_property = models.BooleanField(default=False)
+    commercial_property_type = models.CharField(max_length=255,choices=commercial_property_type_choices, blank=True)
+    our_property = models.BooleanField(default=True)
+
+    featured_property = models.BooleanField(default=False)
+    
+    numbered_property = models.BooleanField(default=False)
+    property_number = models.IntegerField(null=True, blank=True)
 
     owner_name = models.CharField(max_length=255, blank=True)
     owner_address = models.CharField(max_length=255, blank=True)
@@ -55,9 +61,18 @@ class properties_image(models.Model):
 class intrested_user(models.Model):
     pd = models.ForeignKey(properties_detail, on_delete=models.CASCADE)
     name = models.CharField(max_length=255, blank=True)
-    phone_no = models.IntegerField(blank=True)
+    phone_no = models.CharField(max_length=15, blank=True)
     email = models.CharField(max_length=255, blank=True)
     address = models.CharField(max_length=255, blank=True)
 
     def __str__(self):
         return str(self.name)
+
+class wishlist(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user_property = models.ForeignKey(properties_detail, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.user_property.name 
+
+

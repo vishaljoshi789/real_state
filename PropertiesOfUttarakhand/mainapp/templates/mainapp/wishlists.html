@@ -1,0 +1,20 @@
+{% extends 'base.html' %} 
+{% load static %}
+
+{% block content %}
+
+<div class="property-cards flex flex-wrap justify-evenly">
+    {% for i in wishlists %} 
+
+        <a href="/property?id={{i.user_property.id}}" class="property-card w-[300px] mt-5 bg-purple-200 p-3 hover:bg-purple-500 p-4 rounded-md space-y-2">
+            <img src="{{i.user_property.poster.url}}" alt="" class="rounded-sm">
+            <div class="flex space-x-1 justify-center"><img src="{% static 'assets/locatioin.10aa369c.svg' %}" class="w-7" alt=""><span>{{i.user_property.name}}</span> </div>
+        </a>
+
+    {% endfor %}
+</div>
+
+
+
+
+{% endblock %}

@@ -41,6 +41,19 @@
         {% endblock %}
     </div>
 
+    <footer>
+        {% if request.user.is_authenticated %}
+        <span>Hello!!! {{request.user.username}}</span><br>
+            <a href="{% url 'logout' %}">Logout</a><br>
+        <a href="{% url 'get_wishlists' %}">My Wishlists</a>
+
+        {% else %}
+            <a href="{% url 'login' %}">Login</a>
+            <a href="{% url 'register' %}">Register</a>
+        {% endif %}
+
+    </footer>
+
     
 </body>
 </html>

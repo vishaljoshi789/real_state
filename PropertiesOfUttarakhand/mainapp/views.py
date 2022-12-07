@@ -1,8 +1,10 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from .models import properties_detail, properties_image
+from .models import properties_detail, properties_image, wishlist
 from .forms import intrested_user_form
-
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import UserCreationForm
 
 # Create your views here.
 
@@ -78,6 +80,14 @@ def property(request):
     context = {}
     property_id = request.GET.get('id')
     properties = properties_detail.objects.get(id=property_id)
+    if request.user.is_authenticated:
+        is_user_wishlist =  wishlist.objects.filter(user_property=properties).filter(user = request.user)
+        if is_user_wishlist.count() != 0:
+            property_wishlisted = True
+        else:
+            property_wishlisted = False
+        context['property_wishlisted'] = property_wishlisted
+        
     properties_img = properties.properties_img.all()
     user_form = intrested_user_form()
     if request.method == 'POST':
@@ -96,11 +106,62 @@ def property(request):
 
     return render(request, 'mainapp/property.html', context)
 
-def wishlist(request):
-    return HttpResponse("Wishlist")
+
+@login_required(login_url='login')
+def add_wishlist(request, property_id):
+    user_property = properties_detail.objects.get(id=property_id)
+    user = request.user
+    new_wishlist = wishlist.objects.create(
+            user=user, user_property=user_property
+    )
+    new_wishlist.save()
+    return redirect('index')
+
+def get_wishlists(request):
+    wishlists = wishlist.objects.filter(user=request.user)
+    context = {'wishlists': wishlists}
+    return render(request, 'mainapp/wishlists.html', context)
 
 def about(request):
     return HttpResponse("About")
 
 def contact(request):
     return HttpResponse("Contact")
+
+def loginPage(request):
+    page = 'login'
+    if request.method == "POST":
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        print(username, password)
+        user = authenticate(request, username=username, password=password)
+        print(user)
+        if user is not None:
+            login(request, user)
+            return redirect('index')
+        else:
+            print('login failed')
+
+
+    return render(request, 'mainapp/login_register.html', {'page':page})
+
+def logoutPage(request):
+    logout(request)
+    return redirect('index')
+
+def register(request):
+    if request.method == "POST":
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            user = form.save(commit=False)
+            user.save()
+            
+            login(request, user)
+            return redirect('index')
+            
+    page = 'register'
+    form = UserCreationForm()
+    context = {'form': form, 'page':page}
+    return render(request, 'mainapp/login_register.html', context)
+
+
