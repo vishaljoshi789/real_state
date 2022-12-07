@@ -41,7 +41,7 @@
         {% endblock %}
     </div>
 
-    <footer>
+    <footer style="background-color: rgba(85, 85, 85, 0.371); display:flex;color:rgb(58, 72, 255); justify-content:space-evenly; padding:20px; font-weight:bold; font-size:20px;">
         {% if request.user.is_authenticated %}
         <span>Hello!!! {{request.user.username}}</span><br>
             <a href="{% url 'logout' %}">Logout</a><br>
