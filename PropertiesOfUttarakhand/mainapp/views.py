@@ -38,6 +38,8 @@ def properties(request):
     # context["properties_detail"] = properties
 
     properties = properties_detail.objects.all()
+    numbered_property = properties.filter(numbered_property=True).order_by('property_number').values()
+    # print(numbered_property)
     # filtered_properties = False
 
     if request.method == "GET":

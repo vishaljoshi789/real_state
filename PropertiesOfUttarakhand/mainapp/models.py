@@ -42,7 +42,7 @@ class properties_detail(models.Model):
     featured_property = models.BooleanField(default=False)
     
     numbered_property = models.BooleanField(default=False)
-    property_number = models.IntegerField(null=True, blank=True)
+    property_number = models.IntegerField(null=True, blank=True, unique=True)
 
     owner_name = models.CharField(max_length=255, blank=True)
     owner_address = models.CharField(max_length=255, blank=True)
