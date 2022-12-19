@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from .models import properties_detail, properties_image, wishlist
-from .forms import intrested_user_form
+from .forms import intrested_user_form, feedback_form
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import UserCreationForm
@@ -12,8 +12,11 @@ from django.contrib.auth.forms import UserCreationForm
 def index(request):
     context = {}
     properties = properties_detail.objects.all()
-    context['properties'] = properties
+    numbered_property = properties.filter(numbered_property=True).order_by('property_number')
+    properties = properties.filter(numbered_property=False)
+    context['properties'] = properties.order_by('-id')
     context['title'] = "Home"
+    context['numbered_property'] = numbered_property
     return render(request, 'mainapp/index.html', context)
     
 
@@ -38,7 +41,7 @@ def properties(request):
     # context["properties_detail"] = properties
 
     properties = properties_detail.objects.all()
-    numbered_property = properties.filter(numbered_property=True).order_by('property_number').values()
+    
     # print(numbered_property)
     # filtered_properties = False
 
@@ -47,17 +50,26 @@ def properties(request):
         district = request.GET.get('district')
         if property_type == "residential":
             filtered_properties = properties.filter(residential_property=True)
-            context["Title"] = 'Residential'
+            context["Title"] = 'RESIDENTIAL PROPERTIES'
             context["is_search"] = True
+            numbered_property = filtered_properties.filter(numbered_property=True).order_by('property_number')
+            context['numbered_property'] = numbered_property
+            filtered_properties = filtered_properties.filter(numbered_property=False)
         elif property_type == "commercial":
             filtered_properties = properties.filter(commercial_property=True)
-            context["Title"] = 'Commercial'
+            context["Title"] = 'COMMERCIAL PROPERTIES'
             context["is_search"] = True
+            numbered_property = filtered_properties.filter(numbered_property=True).order_by('property_number')
+            context['numbered_property'] = numbered_property
+            filtered_properties = filtered_properties.filter(numbered_property=False)
 
         elif property_type == "our_projects":
-            filtered_properties = properties.filter(our_property=True)
-            context["Title"] = 'Our Projects'
+            filtered_properties = properties.filter(our_property=True).order_by('-id')
+            context["Title"] = 'OUR PROJECTS'
             context["is_search"] = False
+            numbered_property = filtered_properties.filter(numbered_property=True).order_by('property_number')
+            context['numbered_property'] = numbered_property
+            filtered_properties = filtered_properties.filter(numbered_property=False)
 
         else:
             filtered_properties = None
@@ -71,6 +83,8 @@ def properties(request):
         context["district"] = district
 
         context["properties"] = filtered_properties
+        
+    
         # context[""]
     # context["residential"] = residential
     # context["our_projects"] = our_projects
@@ -82,42 +96,57 @@ def property(request):
     context = {}
     property_id = request.GET.get('id')
     properties = properties_detail.objects.get(id=property_id)
-    if request.user.is_authenticated:
-        is_user_wishlist =  wishlist.objects.filter(user_property=properties).filter(user = request.user)
-        if is_user_wishlist.count() != 0:
-            property_wishlisted = True
-        else:
-            property_wishlisted = False
-        context['property_wishlisted'] = property_wishlisted
+    
         
     properties_img = properties.properties_img.all()
     user_form = intrested_user_form()
     if request.method == 'POST':
-        user_form = intrested_user_form(request.POST)
-        if user_form.is_valid():
-            
-            user = user_form.save(commit=False)
-            user.pd = properties
-            user.save()
+        if request.POST.get('type') == 'userform':
+            user_form = intrested_user_form(request.POST)
+            if user_form.is_valid():
+                
+                user = user_form.save(commit=False)
+                user.pd = properties
+                user.save()
             # return redirect('')
+        elif request.POST.get('type') == 'wishlist' and request.user.is_authenticated:
+            user_property = properties_detail.objects.get(id=property_id)
+            user = request.user
+            new_wishlist = wishlist.objects.create(
+                user=user, user_property=user_property
+            )
+            new_wishlist.save()
+
+        if request.user.is_authenticated:
+            is_user_wishlist =  wishlist.objects.filter(user_property=properties).filter(user = request.user)
+            if is_user_wishlist.count() != 0:
+                property_wishlisted = True
+            else:
+                property_wishlisted = False
+            context['property_wishlisted'] = property_wishlisted
+
             
     context["user_form"] = user_form
-    context["title"] = properties.area
+    context["title"] = properties.name
     context["properties_images"] = properties_img
     context["properties_detail"] = properties
+    context['amenities'] = properties.other_facilities.split('\n')
 
     return render(request, 'mainapp/property.html', context)
 
 
-@login_required(login_url='login')
-def add_wishlist(request, property_id):
-    user_property = properties_detail.objects.get(id=property_id)
-    user = request.user
-    new_wishlist = wishlist.objects.create(
-            user=user, user_property=user_property
-    )
-    new_wishlist.save()
-    return redirect('index')
+# @login_required(login_url='login')
+# def add_wishlist(request, property_id):
+#     user_property = properties_detail.objects.get(id=property_id)
+#     user = request.user
+#     new_wishlist = wishlist.objects.create(
+#             user=user, user_property=user_property
+#     )
+#     new_wishlist.save()
+#     print(redirect("property")['Location']+f'?id={property_id}')
+#     return redirect("property")['Location']+f'?id={property_id}'
+    
+
 
 def get_wishlists(request):
     wishlists = wishlist.objects.filter(user=request.user)
@@ -165,5 +194,21 @@ def register(request):
     form = UserCreationForm()
     context = {'form': form, 'page':page}
     return render(request, 'mainapp/login_register.html', context)
+
+def delete_wishlist(request, id):
+    wishlist.objects.get(id=id).delete()
+    return redirect('get_wishlists')
+
+def feedback(request):
+    content = {}
+    form  = feedback_form()
+    content['form'] = form
+    if request.method == 'POST':
+        form = feedback_form(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('index')
+
+    return render(request, 'mainapp/feedback.html', content)
 
 

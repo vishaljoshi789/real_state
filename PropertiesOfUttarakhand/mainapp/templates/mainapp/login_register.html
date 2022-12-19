@@ -2,8 +2,12 @@
 
 {% block content %}
 
+<style>
+    
+</style>
+
 {% if page == 'login' %}
-<form action="" method="POST" >
+<form action="" method="POST" style="display:flex; flex-direction: column;">
     {% csrf_token %}
     <input type="text" name="username" id="" placeholder="Username">
     <input type="password" name="password" id="" placeholder="Password">
@@ -13,7 +17,7 @@
 </form>
 
 {% else %}
-<form method="post">
+<form method="post" style="display:flex;flex-direction: column; background-color: rgb(255, 179, 255);" >
     {% csrf_token %} 
     {% for field in form %}
         <label for="">{{field.label}}</label>

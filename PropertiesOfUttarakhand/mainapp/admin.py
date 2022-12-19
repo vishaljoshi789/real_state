@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import properties_detail, properties_image, intrested_user, wishlist
+from .models import properties_detail, properties_image, intrested_user, wishlist, feedback
 
 # Register your models here.
 
@@ -13,4 +13,5 @@ class PropertyAdmin(admin.ModelAdmin):
 admin.site.register(properties_detail, PropertyAdmin)
 admin.site.register(intrested_user)
 admin.site.register(wishlist)
+admin.site.register(feedback)
 # admin.site.register(properties_image)

@@ -111,19 +111,55 @@
         border: 2px solid white;
 
     }
+    .mobile-intrested{
+        display: none;
+        margin: 10px auto;
+
+    }
+    .slider-image{
+            height: 50vh;
+        }
+
+    @media screen and (max-width: 600px) {
+        .intrested{
+            display:none;
+        }.mobile-intrested{
+            display: block;
+
+        }
+        .slider-image{
+            height: 30vh;
+        }
+
+    }
+        
+    
+    @media screen and (min-width: 600px) and (max-width:1200px) {
+        .intrested{
+            display:none;
+        }.mobile-intrested{
+            display: block;
+
+        }
+        .slider-image{
+            height: 50vh;
+        }
+
+        
+    }
 </style>
 
-<h1 class="text-5xl text-blue-500 text-center my-5 font-bold">Plots</h1>
+<h1 class="text-5xl text-blue-500 text-center my-5 font-bold">{{properties_detail.name}}</h1>
 
 <div class="container mx-auto">
     <div style="display: flex; justify-content:space-evenly">
-        <div class="image-slider" style="width: 600px;">
+        <div class="image-slider" style="width: 900px;">
             <div class="slideshow-container">
                 {% for i in properties_images %}
 
-                <div class="mySlides fade">
+                <div class="mySlides fade slider-image" style="width: 100%; overflow: hidden; align-items: center;">
                     <!-- <div class="numbertext">{{properties_images}} / {{properties_images.count}}</div> -->
-                    <img src="{{i.image.url}}" style="width:100%">
+                    <img src="{{i.image.url}}" style="width:100%; height: 100%;">
                     <div class="text">{{i.img_caption}}</div>
                 </div>
 
@@ -144,8 +180,8 @@
             </div>
         </div>
 
-        <div class="intrested bg-gray-400 bg-opacity-75 w-fit p-3 rounded mx-auto" style="height: fit-content; margin:auto 0;">
-            <span class="text-2xl text-gray-800 font-semibold">Intrested?</span>
+        <div class="intrested bg-gray-400 bg-opacity-75 w-fit p-3 rounded mx-auto" style="height: fit-content; margin:auto 10px;">
+            <span class="text-2xl text-gray-800 font-semibold">Need a Call From Our Side?</span>
             <form method="post" class="flex flex-col space-y-3">
                 {% csrf_token %}
                 <input type="text" name="name" placeholder="Name" class="p-1 rounded">
@@ -159,44 +195,70 @@
 
 
     <div class="properties-details  text-white my-4 flex justify-center">
-        <table class="rounded bg-slate-700">
+        <table class="rounded bg-slate-700" style="width: 100%;">
             <tbody>
                 <tr>
-                    <td>Area </td>
-                    <td>Gannacenter</td>
-                </tr>
-                <tr>
-                    <td>Dimension </td>
-                    <td>2400 square ft.</td>
-                </tr>
-                <tr>
-                    <td>Price </td>
-                    <td>{{properties_detail.price}}
-                    </td>
+                    <td style="width:200px">Area </td>
+                    <td>{{properties_detail.area}}</td>
                 </tr>
                 <tr>
                     <td>Location </td>
+                    <td>{{properties_detail.location}}</td>
+                </tr>
+                <tr>
+                    <td>Price </td>
+                    <td>Rs. {% if properties_detail.price == NULL %}{{properties_detail.price_from}} - {{properties_detail.price_to}}{% else %}{{properties_detail.price}}{% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <td>District </td>
                     <td>{{properties_detail.district}}</td>
                 </tr>
                 <tr>
-                    <td>Ammenities </td>
-                    <td>Lorem ipsum dolor sit amet consectetur adipisicing elit. Non eligendi vitae aperiam? Ducimus
-                        necessitatibus molestias eligendi nisi assumenda, perspiciatis esse, cum vitae enim vel
-                        atque?</td>
+                    <td>Property Type</td>
+                    <td>{% if properties_detail.commercial_property %}Commercial Property {% else %} {% if properties_detail.residential_property %} Residential Property {% endif %}{% endif %}</td>
+                </tr>
+                <tr>
+                    <td>Status</td>
+                    <td>{{properties_detail.status}}</td>
+                </tr>
+                <tr>
+                    <td>Topology</td>
+                    <td>{% if properties_detail.commercial_property %}{{properties_detail.commercial_property_type}} {% else %} {% if properties_detail.residential_property %} {{properties_detail.residential_property_type}}{% endif %}{% endif %}</td>
+                </tr>
+
+                <tr>
+                    <td>Facilities </td>
+                    <td>{% for i in amenities %}{{i}}<br> {% endfor %}</td>
                 </tr>
             </tbody>
         </table>
     </div>
     <div class="property-function p-3 mb-4 flex justify-evenly">
         {% if property_wishlisted %}
-        <a href="{% url 'add_wishlist' properties_detail.id %}"
-            class="bg-blue-500 text-white p-3 rounded hover:bg-blue-700">Already Wishlisted</a>
+        <div class="bg-blue-500 text-white p-3 rounded hover:bg-gray-700">Already Wishlisted</div>
+        
 
         {% else %}
-        <div href="" class="bg-blue-500 text-white p-3 rounded hover:bg-gray-700">Add to Wishlist</div>
+        <form action="" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="type" value="wishlist">
+            <input type="submit" value="Add to Wishlist" class="bg-blue-500 text-white p-3 rounded hover:bg-blue-700"></form>
         {% endif %}
 
-        <button class="bg-blue-500 text-white p-3 rounded hover:bg-blue-700">Share</button>
+        <button class="bg-blue-500 text-white p-3 rounded hover:bg-blue-700" id="share-btn">Share</button>
+    </div>
+    <div class="mobile-intrested bg-gray-400 bg-opacity-75 w-fit p-3 rounded mx-auto" style="height: fit-content;">
+        <span class="text-2xl text-gray-800 font-semibold">Need a Call From Our Side?</span>
+        <form method="post" class="flex flex-col space-y-3">
+            {% csrf_token %}
+            <input type="hidden" name="type" value="userform">
+            <input type="text" name="name" placeholder="Name" class="p-1 rounded">
+            <input type="tel" name="phone_no" placeholder="Phone Number" class="p-1 rounded">
+            <input type="text" name="email" placeholder="Email" class="p-1 rounded">
+            <input type="text" name="address" placeholder="Address" class="p-1 rounded">
+            <input type="submit" style="padding: 5px;" class="bg-blue-500 text-white rounded hover:bg-blue-700">
+        </form>
     </div>
 
 </div>
@@ -211,7 +273,6 @@
 {{properties_detail.pin_code}}<br> -->
 
 <!-- Already Wishlisted -->
-<!-- <a href="{% url 'add_wishlist' properties_detail.id %}">Wishlist</a> -->
 <!-- <form method="post">
     {% csrf_token %}
     {{user_form}}
@@ -255,9 +316,19 @@
             dots[i].className = dots[i].className.replace(" active", "");
         }
 
-        slides[slideIndex - 1].style.display = "block";
+        slides[slideIndex - 1].style.display = "flex";
         dots[slideIndex - 1].className += " active";
     }
+    let shareData = {
+        title : 'Properties Of Uttrakhand',
+        text : '{{properties_detail.name}}',
+        url : document.URL
+    }
+    let sharebtn = document.getElementById("share-btn")
+    sharebtn.addEventListener("click",()=>{
+        navigator.clipboard.writeText(document.URL);
+        navigator.share(shareData);
+    })
 </script>
 
 {% endblock %}

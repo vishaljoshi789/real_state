@@ -4,11 +4,11 @@ from django.contrib.auth.models import User
 
 # Create your models here.
 
-status_choices = (("uc", "Under Construction"),("js", "Just Launched"), ("rm", "Ready to Move"), ("so", "Sold Out"))
+status_choices = (("Under Construction", "Under Construction"),("Just Launched", "Just Launched"), ("Ready to Move", "Ready to Move"), ("Sold Out", "Sold Out"))
 
-residential_property_type_choices = (("stdio", "Studio"), ("1bhk", "1 BHK"), ("2bhk", "2 BHK"), ("3bhk", "3 BHK"), ("house", "House"), ("villa", "Villa"), ("plots", "Plots"))
+residential_property_type_choices = (("Studio", "Studio"), ("1 BHK", "1 BHK"), ("2 BHK", "2 BHK"), ("3 BHK", "3 BHK"), ("House", "House"), ("Villa", "Villa"), ("Plots", "Plots"))
 
-commercial_property_type_choices = (("officespace", "Office Space"), ("foodcourt", "Food Court"), ("shoppingcomplex", "Shopping Complex"), ("retailshops", "Retail Shops"), ("plots", "Plots"), ("hotel", "Hotel"))
+commercial_property_type_choices = (("Office Space", "Office Space"), ("Food Court", "Food Court"), ("Shopping Complex", "Shopping Complex"), ("Retail Shops", "Retail Shops"), ("Plots", "Plots"), ("Hotel", "Hotel"))
 
 district_choices = (("Dehradun", "Dehradun"), ("Haridwar", "Haridwar"), ("Chamoli", "Chamoli"), ("Rudraprayag", "Rudraprayag"), ("Tehri", "Tehri"), ("Uttarkashi", "Uttarkashi"), ("Pauri", "Pauri"), ("Almora", "Almora"), ("Nanital", "Nanital"), ("Pithoragarh", "Pithoragarh"), ("Udham Singh Nagar", "Udham Singh Nagar"), ("Bageshwar", "Bageshwar"), ("Champawat", "Champawat"))
 
@@ -23,31 +23,40 @@ def property_poster_path(instance, filename):
 
 class properties_detail(models.Model):
     name = models.CharField(max_length=255, blank=True, null=True)
-    description = models.TextField(null=True)
-    poster = models.ImageField(upload_to=property_poster_path, null=True)
-    area = models.CharField(max_length=255, blank=True)
-    status = models.CharField(max_length=255,choices=status_choices, blank=True, default="rm")
-    price = models.IntegerField(null=True)
-    locality = models.CharField(max_length=255, blank=True)
-    district = models.CharField(max_length=255,choices=district_choices, blank=True) 
-    pin_code = models.CharField(max_length=255, blank=True)
-    other_amenities = models.TextField(blank=True, null=True)
+    description = models.TextField(null=True, blank=True)
+    poster = models.ImageField(upload_to=property_poster_path, null=True, blank=True)
+    location = models.CharField(max_length=255, blank=True, null=True)
+    status = models.CharField(max_length=255,choices=status_choices, blank=True, default="Ready to Move", null=True)
+    price = models.CharField(max_length=255, null=True, blank=True)
+    price_from = models.CharField(max_length=255, null=True, blank=True)
+    price_to = models.CharField(max_length=255, null=True, blank=True)
+    area = models.CharField(max_length=255, blank=True, null=True)
+    district = models.CharField(max_length=255,choices=district_choices, blank=True, null=True) 
+    pin_code = models.CharField(max_length=255, blank=True, null=True)
+    other_facilities = models.TextField(blank=True, null=True)
 
     residential_property = models.BooleanField(default=False)
-    resdential_property_type = models.CharField(max_length=255,choices=residential_property_type_choices, blank=True)
+    residential_property_type = models.CharField(max_length=255,choices=residential_property_type_choices, blank=True, null=True)
     commercial_property = models.BooleanField(default=False)
-    commercial_property_type = models.CharField(max_length=255,choices=commercial_property_type_choices, blank=True)
+    commercial_property_type = models.CharField(max_length=255,choices=commercial_property_type_choices, blank=True, null=True)
     our_property = models.BooleanField(default=True)
+    out_property_type = models.CharField(max_length=255, blank=True, null=True)
 
     featured_property = models.BooleanField(default=False)
     
     numbered_property = models.BooleanField(default=False)
     property_number = models.IntegerField(null=True, blank=True, unique=True)
 
-    owner_name = models.CharField(max_length=255, blank=True)
-    owner_address = models.CharField(max_length=255, blank=True)
-    owner_phone = models.CharField(max_length=255, blank=True)
-    owner_discription = models.CharField(max_length=1000, blank=True)
+    bathroom = models.CharField(max_length=255, blank=True, null=True)
+    kitchen = models.CharField(max_length=255, blank=True, null=True)
+    bedroom = models.CharField(max_length=255, blank=True, null=True)
+
+
+    owner_name = models.CharField(max_length=255, blank=True, null=True)
+    owner_address = models.CharField(max_length=255, blank=True, null=True)
+    owner_phone = models.CharField(max_length=255, blank=True, null=True)
+    owner_discription = models.CharField(max_length=1000, blank=True, null=True)
+    owner_discription = models.CharField(max_length=1000, blank=True, null=True)
 
     def __str__(self):
         return str(self.name)
@@ -74,5 +83,12 @@ class wishlist(models.Model):
 
     def __str__(self):
         return self.user_property.name 
+
+class feedback(models.Model):
+    name = models.CharField(max_length=255, blank=False)
+    phone_no = models.CharField(max_length=255, blank=False)
+    comment = models.TextField(blank=False)
+    def __str__(self):
+        return self.name
 
 

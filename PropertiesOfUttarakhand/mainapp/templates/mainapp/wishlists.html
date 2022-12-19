@@ -1,15 +1,65 @@
-{% extends 'base.html' %} 
+{% extends 'base.html' %}
 {% load static %}
 
 {% block content %}
 
-<div class="property-cards flex flex-wrap justify-evenly">
-    {% for i in wishlists %} 
+<style>
+    .property-details-icon div img{
+        height: 20px;
+    }
 
-        <a href="/property?id={{i.user_property.id}}" class="property-card w-[300px] mt-5 bg-purple-200 p-3 hover:bg-purple-500 p-4 rounded-md space-y-2">
-            <img src="{{i.user_property.poster.url}}" alt="" class="rounded-sm">
-            <div class="flex space-x-1 justify-center"><img src="{% static 'assets/locatioin.10aa369c.svg' %}" class="w-7" alt=""><span>{{i.user_property.name}}</span> </div>
+    .property-details-icon div{
+        display: flex;
+        background-color: rgba(255, 255, 255, 0.658);
+        border-radius: 5px;
+        padding: 5px; 
+        gap: 10px;
+        width: fit-content;
+        align-items: center;
+    }
+
+    .property-details-icon{
+        position: relative;
+        display: flex;
+        width: 100%;
+        height: 120%;
+        gap: 10px; 
+        /* flex-direction: column; */
+        align-items: flex-end;
+        /* opacity: 1; */
+    }
+
+    /* .property-details-icon:hover{
+        opacity: 1;
+    } */
+
+    .property-details-icon div span{
+        font-size: small;
+    }
+</style>
+
+<div class="property-cards flex flex-wrap justify-evenly">
+    {% for i in wishlists %}
+
+    <div class="property-card w-[300px] mt-5 rounded-md space-y-2"
+        style="background: rgb(233,213,255);display: flex; flex-direction: column; justify-content: space-evenly;padding-bottom:10px;">
+        <a href="/property?id={{i.user_property.id}}" class="property-card mt-5 rounded-md space-y-2" style="background: rgb(233,213,255);padding-bottom:10px;">
+            
+            <div style="background: url({{i.user_property.poster.url}});width: 300px; height: 250px; background-repeat: no-repeat; background-size: 100% 100%;">{% if i.user_property.featured_property %}<img title="Featured Property" style="width: 30px;z-index: 3; padding: 10px 0 0 10px; position:absolute;" src="{% static 'assets/star.svg' %}" alt="">{% endif %}
+                
+            </div>
+            <div class="flex space-x-1 justify-center" style="flex-direction: column;"><center>{{i.user_property.name}}</center> 
+                <div class="property-details-icon">
+                    <div class="area" ><img src="{% static 'assets/area.svg' %}" alt="" ><span>{{i.user_property.area}} sqft.</span></div>
+                    <div class="bedroom"><img src="{% static 'assets/bed.svg' %}" alt="" ><span>{{i.user_property.bedroom}}</span></div>
+                    <div class="kitchen"><img src="{% static 'assets/kitchen.png' %}" alt="" ><span>{{i.user_property.kitchen}}</span></div>
+                    <div class="bathroom"><img src="{% static 'assets/bathroom.png' %}" alt=""><span>{{i.user_property.bathroom}}</span></div>
+                </div></div>
         </a>
+        <!-- <img src="{% static 'assets/locatioin.10aa369c.svg' %}" class="w-7" alt=""> -->
+        <div class="flex space-x-1 justify-evenly">
+                <a href="{% url 'delete_wishlist' i.id %}"><img src="{% static 'assets/delete.svg' %}" alt="" style="z-index: 2;"></a> </div>
+    </div>
 
     {% endfor %}
 </div>

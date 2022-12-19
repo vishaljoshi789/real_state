@@ -4,7 +4,40 @@
 {% block content %}
 
     
+<style>
+    .property-details-icon div img{
+        height: 20px;
+    }
 
+    .property-details-icon div{
+        display: flex;
+        background-color: rgba(255, 255, 255, 0.658);
+        border-radius: 5px;
+        padding: 5px; 
+        gap: 10px;
+        width: fit-content;
+        align-items: center;
+    }
+
+    .property-details-icon{
+        position: relative;
+        display: flex;
+        width: 100%;
+        height: 120%;
+        gap: 10px; 
+        /* flex-direction: column; */
+        align-items: flex-end;
+        /* opacity: 1; */
+    }
+
+    /* .property-details-icon:hover{
+        opacity: 1;
+    } */
+
+    .property-details-icon div span{
+        font-size: small;
+    }
+</style>
 
 
 {% if properties %}
@@ -19,7 +52,7 @@ Search
 
 {% endif %} -->
 <div class="featured-property p-5 text-xl font-bold">
-    <h2 class="text-center text-3xl font-bold font-mono underline">{{Title}}</h2>
+    <h2 class="text-center text-3xl font-bold underline" style="font-size: 40px;">{{Title}}</h2>
     {% if is_search %} 
 
     <form action="">
@@ -44,14 +77,41 @@ Search
     </form>
 
     {% endif %}
+    <div class="property-cards flex flex-wrap justify-evenly" style="gap: 10px;">
+    {% for i in numbered_property %} 
+    <a href="/property?id={{i.id}}" class="property-card mt-5 rounded-md space-y-2" style="background: rgb(233,213,255);padding-bottom:10px;">
+            
+        <div style="background: url({{i.poster.url}});width: 300px; height: 250px; background-repeat: no-repeat; background-size: 100% 100%;">{% if i.featured_property %}<img title="Featured Property" style="width: 30px;z-index: 3; padding: 10px 0 0 10px; position:absolute;" src="{% static 'assets/star.svg' %}" alt="">{% endif %}
+            
+        </div>
+        <div class="flex space-x-1 justify-center" style="flex-direction: column;"><center>{{i.name}}</center> 
+            <div class="property-details-icon">
+                <div class="area" ><img src="{% static 'assets/area.svg' %}" alt="" ><span>{{i.area}} sqft.</span></div>
+                <div class="bedroom"><img src="{% static 'assets/bed.svg' %}" alt="" ><span>{{i.bedroom}}</span></div>
+                <div class="kitchen"><img src="{% static 'assets/kitchen.png' %}" alt="" ><span>{{i.kitchen}}</span></div>
+                <div class="bathroom"><img src="{% static 'assets/bathroom.png' %}" alt=""><span>{{i.bathroom}}</span></div>
+            </div></div>
+    </a>
+    {% endfor %}</div>
+
+    <br><hr><br>
 
     
 
     <div class="property-cards flex flex-wrap justify-evenly">
         {% for i in properties %} 
-        <a href="/property?id={{i.id}}" class="property-card w-[300px] mt-5 bg-purple-200 p-3 hover:bg-purple-500 p-4 rounded-md space-y-2">
-            <img src="{{i.poster.url}}" alt="" class="rounded-sm">
-            <div class="flex space-x-1 justify-center"><img src="{% static 'assets/locatioin.10aa369c.svg' %}" class="w-7" alt=""><span>{{i.name}}</span> </div>
+        <a href="/property?id={{i.id}}" class="property-card mt-5 rounded-md space-y-2" style="background: rgb(233,213,255);padding-bottom:10px;">
+            
+            <div style="background: url({{i.poster.url}});width: 300px; height: 250px; background-repeat: no-repeat; background-size: 100% 100%;">{% if i.featured_property %}<img title="Featured Property" style="width: 30px;z-index: 3; padding: 10px 0 0 10px; position:absolute;" src="{% static 'assets/star.svg' %}" alt="">{% endif %}
+                
+            </div>
+            <div class="flex space-x-1 justify-center" style="flex-direction: column;"><center>{{i.name}}</center> 
+                <div class="property-details-icon">
+                    <div class="area" ><img src="{% static 'assets/area.svg' %}" alt="" ><span>{{i.area}} sqft.</span></div>
+                    <div class="bedroom"><img src="{% static 'assets/bed.svg' %}" alt="" ><span>{{i.bedroom}}</span></div>
+                    <div class="kitchen"><img src="{% static 'assets/kitchen.png' %}" alt="" ><span>{{i.kitchen}}</span></div>
+                    <div class="bathroom"><img src="{% static 'assets/bathroom.png' %}" alt=""><span>{{i.bathroom}}</span></div>
+                </div></div>
         </a>
         {% endfor %}        
     </div>
@@ -71,7 +131,7 @@ Search
     {% else %}
 
 <div class="properties-category m-5 text-xl w-1/2 lg:w-full mx-auto">
-    <h3 class="text-5xl underline text-center my-5">Properties</h3>
+    <h3 class="text-5xl underline text-center my-5" style="font-size: 40px; font-weight: bold;">PROPERTIES</h3>
     <div class="properties-cata flex flex-col lg:flex-row justify-evenly items-center">
         <a href="/properties?type=our_projects" class="bg-purple-200 p-3 hover:bg-purple-500 m-5 cursor-pointer rounded-md text-center font-serif font-bold">
             <img src="{% static 'images/demo-house.webp' %}" alt="" class="">
@@ -82,13 +142,10 @@ Search
     </div>
 </div>
 
-
 {% endif %}
 
-
-
 {% endif %}
-{{properties.count}}
+<!-- {{properties.count}} -->
 
 {% endblock %}
 

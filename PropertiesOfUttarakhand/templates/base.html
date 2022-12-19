@@ -17,7 +17,7 @@
             </div>
             <div class="flex space-x-10 mx-10 justify-end">
                 <a href="" class="facebook"><img src="{% static 'assets/fb.svg' %}" alt=""></a>
-                <a href="" class="twitter"><img src="{% static 'assets/twitter.svg' %}" alt=""></a>
+                <!-- <a href="" class="twitter"><img src="{% static 'assets/twitter.svg' %}" alt=""></a> -->
                 <a href="" class="youtube"><img src="{% static 'assets/youtube.svg' %}" alt=""></a>
                 <a href="" class="linkedin"><img src="{% static 'assets/linkedin.svg' %}" alt=""></a>
                 <a href="" class="instagram"><img src="{% static 'assets/instagram.svg' %}" alt=""></a>
@@ -29,19 +29,19 @@
         <div class="lower flex justify-evenly md:justify-end md:px-10 my-2 md:space-x-10 space-x-1 text-sm md:text-lg">
             <a href="{% url 'index' %}" class="nav_buttons bg-blue-500 text-white p-1 md:p-2 rounded-lg hover:bg-blue-700">HOME</a>
             <a href="{% url 'properties' %}" class="nav_buttons bg-blue-500 text-white p-1 md:p-2 rounded-lg hover:bg-blue-700">PROPERTIES</a>
-            <a href="" class="nav_buttons bg-blue-500 text-white p-1 md:p-2 rounded-lg hover:bg-blue-700">WISHLIST</a>
+            <a href="{% url 'get_wishlists' %}" class="nav_buttons bg-blue-500 text-white p-1 md:p-2 rounded-lg hover:bg-blue-700">WISHLIST</a>
             <a href="" class="nav_buttons bg-blue-500 text-white p-1 md:p-2 rounded-lg hover:bg-blue-700">ABOUT</a>
-            <a href="" class="nav_buttons bg-blue-500 text-white p-1 md:p-2 rounded-lg hover:bg-blue-700">CONTACT US</a>
+            <a href="{% url 'feedback'%}" class="nav_buttons bg-blue-500 text-white p-1 md:p-2 rounded-lg hover:bg-blue-700">FEEDBACK</a>
         </div>
     </nav>
     <hr>
-    <div class="content">
+    <div class="content" style="min-height: 78vh;">
         {% block content %}
 
         {% endblock %}
     </div>
 
-    <footer style="background-color: rgba(85, 85, 85, 0.371); display:flex;color:rgb(58, 72, 255); justify-content:space-evenly; padding:20px; font-weight:bold; font-size:20px;">
+    <footer style="background-color: rgba(85, 85, 85, 0.371); display:flex;color:rgb(58, 72, 255); justify-content:space-evenly; padding:20px; font-weight:bold; font-size:15px;">
         {% if request.user.is_authenticated %}
         <span>Hello!!! {{request.user.username}}</span><br>
             <a href="{% url 'logout' %}">Logout</a><br>

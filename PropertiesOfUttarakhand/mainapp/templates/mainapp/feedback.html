@@ -1,0 +1,26 @@
+{% extends 'base.html' %} 
+{% load static %}
+
+{% block content %}
+<style>
+    form input, textarea{
+        padding: 5px;
+        border-radius: 5px;
+    }form label{
+        font-size: 25px;
+    }
+</style>
+
+<div style="margin: 10px; display: flex; justify-content: center; flex-direction: column; align-items: center ;">
+<span style="font-size: 30px; font-weight: bold; color: rgb(0, 0, 0); margin: 10px;text-decoration-line: underline; text-align: center;">YOUR FEEDBACK MATTERS</span>
+
+
+    <form method="post" style="display: flex; flex-direction: column; padding: 15px; background-color: rgb(125, 125, 255); border-radius: 5px;">
+        {% csrf_token %}{% for i in form %}
+        <label for="">{{i.label}}</label>{{i}}{% endfor %}<input type="submit" value="Submit" style="border: 2px solid black; width: fit-content; padding: 5px; margin: 10px auto; font-weight: bold; border-radius: 10px;">
+    </form>
+    
+
+
+</div>
+{% endblock content %}
