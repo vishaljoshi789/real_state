@@ -3,6 +3,32 @@
 {% block content %}
 
 <style>
+    form{
+        background-color: rgb(69, 69, 235);
+        display: flex;
+        flex-direction: column;
+        width: fit-content;
+        padding: 30px;
+        row-gap: 10px;
+        margin: 20px auto;
+        border-radius: 5px;
+    }
+    form input{
+        background-color: white;
+        border: 2px solid black;
+        border-radius: 5px;
+        padding: 5px;
+    }
+
+    form p{
+        color: white;
+    }
+    form p a{
+        background-color: white;
+        color:rgb(69, 69, 235);
+        padding: 5px;
+        border-radius: 5px;
+    }
     
 </style>
 
@@ -11,13 +37,13 @@
     {% csrf_token %}
     <input type="text" name="username" id="" placeholder="Username">
     <input type="password" name="password" id="" placeholder="Password">
-    <input type="submit" value="Login">
+    <input type="submit" value="Login" style="color: white;">
     <p>Don't have an account <a href="{% url 'register' %}">Register</a></p>
 
 </form>
 
 {% else %}
-<form method="post" style="display:flex;flex-direction: column; background-color: rgb(255, 179, 255);" >
+<form method="post">
     {% csrf_token %} 
     {% for field in form %}
         <label for="">{{field.label}}</label>

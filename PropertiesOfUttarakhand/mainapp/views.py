@@ -22,66 +22,53 @@ def index(request):
 
 def properties(request):
     context = {}
-    # property_id = request.GET.get('id')
-    # properties = properties_detail.objects.get(id=property_id)
-    # properties_img = properties.properties_img.all()
-    # user_form = intrested_user_form()
-    # if request.method == 'POST':
-    #     user_form = intrested_user_form(request.POST)
-    #     if user_form.is_valid():
-            
-    #         user = user_form.save(commit=False)
-    #         user.pd = properties
-    #         user.save()
-    #         return redirect('index')
-            
-    # context["user_form"] = user_form
-    # context["title"] = properties.area
-    # context["properties_images"] = properties_img
-    # context["properties_detail"] = properties
-
     properties = properties_detail.objects.all()
-    
-    # print(numbered_property)
-    # filtered_properties = False
-
     if request.method == "GET":
         property_type = request.GET.get('type')
         district = request.GET.get('district')
+        
         if property_type == "residential":
             filtered_properties = properties.filter(residential_property=True)
             context["Title"] = 'RESIDENTIAL PROPERTIES'
             context["is_search"] = True
-            numbered_property = filtered_properties.filter(numbered_property=True).order_by('property_number')
-            context['numbered_property'] = numbered_property
             filtered_properties = filtered_properties.filter(numbered_property=False)
+            numbered_property = properties.filter(numbered_property=True).order_by('property_number')
+            context['numbered_property'] = numbered_property
         elif property_type == "commercial":
             filtered_properties = properties.filter(commercial_property=True)
             context["Title"] = 'COMMERCIAL PROPERTIES'
             context["is_search"] = True
-            numbered_property = filtered_properties.filter(numbered_property=True).order_by('property_number')
-            context['numbered_property'] = numbered_property
             filtered_properties = filtered_properties.filter(numbered_property=False)
+            numbered_property = properties.filter(numbered_property=True).order_by('property_number')
+            context['numbered_property'] = numbered_property
 
         elif property_type == "our_projects":
             filtered_properties = properties.filter(our_property=True).order_by('-id')
             context["Title"] = 'OUR PROJECTS'
             context["is_search"] = False
-            numbered_property = filtered_properties.filter(numbered_property=True).order_by('property_number')
-            context['numbered_property'] = numbered_property
             filtered_properties = filtered_properties.filter(numbered_property=False)
+            numbered_property = properties.filter(numbered_property=True).order_by('property_number')
+            context['numbered_property'] = numbered_property
+
+        elif property_type == "all":
+            filtered_properties = properties
+            context["Title"] = 'PROJECTS'
+            context["is_search"] = False
+            filtered_properties = filtered_properties.filter(numbered_property=False)
+            numbered_property = properties.filter(numbered_property=True).order_by('property_number')
+            context['numbered_property'] = numbered_property
 
         else:
             filtered_properties = None
 
         
         if district:
-            districtLo=district.lower()
-            filtered_properties = filtered_properties.filter(district=districtLo)
+            filtered_properties = filtered_properties.filter(district=district)
+            print(filtered_properties)
+
 
         context["property_type"] = property_type
         context["district"] = district
-
         context["properties"] = filtered_properties
         
     
@@ -109,13 +96,16 @@ def property(request):
                 user.pd = properties
                 user.save()
             # return redirect('')
-        elif request.POST.get('type') == 'wishlist' and request.user.is_authenticated:
-            user_property = properties_detail.objects.get(id=property_id)
-            user = request.user
-            new_wishlist = wishlist.objects.create(
-                user=user, user_property=user_property
-            )
-            new_wishlist.save()
+        elif request.POST.get('type') == 'wishlist':
+            if request.user.is_authenticated:
+                user_property = properties_detail.objects.get(id=property_id)
+                user = request.user
+                new_wishlist = wishlist.objects.create(
+                    user=user, user_property=user_property
+                )
+                new_wishlist.save()
+            else:
+                return redirect('login')
 
         if request.user.is_authenticated:
             is_user_wishlist =  wishlist.objects.filter(user_property=properties).filter(user = request.user)
@@ -147,7 +137,7 @@ def property(request):
 #     return redirect("property")['Location']+f'?id={property_id}'
     
 
-
+@login_required(login_url="login")
 def get_wishlists(request):
     wishlists = wishlist.objects.filter(user=request.user)
     context = {'wishlists': wishlists}
